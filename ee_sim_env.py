@@ -35,10 +35,10 @@ def make_ee_sim_env(task_name):
                                         right_gripper_qvel (1)]     # normalized gripper velocity (pos: opening, neg: closing)
                         "images": {"main": (480x640x3)}        # h, w, c, dtype='uint8'
     """
-    if 'sim_transfer_cube' in task_name:
-        xml_path = os.path.join(XML_DIR, f'bimanual_viperx_ee_transfer_cube.xml')
+    if 'sim_transfer_lego' in task_name:
+        xml_path = os.path.join(XML_DIR, f'bimanual_ned_ee_transfer_lego.xml')
         physics = mujoco.Physics.from_xml_path(xml_path)
-        task = TransferCubeEETask(random=False)
+        task = TransferLegoEETask(random=False)
         env = control.Environment(physics, task, time_limit=20, control_timestep=DT,
                                   n_sub_steps=None, flat_observation=False)
     elif 'sim_insertion' in task_name:
@@ -51,7 +51,7 @@ def make_ee_sim_env(task_name):
         raise NotImplementedError
     return env
 
-class BimanualViperXEETask(base.Task):
+class BimanualNiryoNedEETask(base.Task):
     def __init__(self, random=None):
         super().__init__(random=random)
 
@@ -83,11 +83,13 @@ class BimanualViperXEETask(base.Task):
         # (2) get env._physics.named.data.xpos['vx300s_left/gripper_link']
         #     get env._physics.named.data.xquat['vx300s_left/gripper_link']
         #     repeat the same for right side
-        np.copyto(physics.data.mocap_pos[0], [-0.31718881, 0.5, 0.29525084])
-        np.copyto(physics.data.mocap_quat[0], [1, 0, 0, 0])
-        # right
-        np.copyto(physics.data.mocap_pos[1], np.array([0.31718881, 0.49999888, 0.29525084]))
-        np.copyto(physics.data.mocap_quat[1],  [1, 0, 0, 0])
+        # Replace this block:
+        np.copyto(physics.data.mocap_pos[0], [-0.40829203, -0.00351209, 0.19029617])
+        np.copyto(physics.data.mocap_quat[0], [0.65820575, 0.64820394, 0.27353214, -0.26791231])
+
+        np.copyto(physics.data.mocap_pos[1], [0.40829204, 0.00351246, 0.19029617])
+        np.copyto(physics.data.mocap_quat[1], [0.26791318, -0.27353128, 0.6482043, 0.6582054])
+
 
         # reset gripper control
         close_gripper_control = np.array([
@@ -150,7 +152,7 @@ class BimanualViperXEETask(base.Task):
         raise NotImplementedError
 
 
-class TransferCubeEETask(BimanualViperXEETask):
+class TransferLegoEETask(BimanualNiryoNedEETask):
     def __init__(self, random=None):
         super().__init__(random=random)
         self.max_reward = 4
@@ -182,9 +184,9 @@ class TransferCubeEETask(BimanualViperXEETask):
             contact_pair = (name_geom_1, name_geom_2)
             all_contact_pairs.append(contact_pair)
 
-        touch_left_gripper = ("red_box", "vx300s_left/10_left_gripper_finger") in all_contact_pairs
-        touch_right_gripper = ("red_box", "vx300s_right/10_right_gripper_finger") in all_contact_pairs
-        touch_table = ("red_box", "table") in all_contact_pairs
+        touch_left_gripper = ("lego_square", "ned_left/9_left_finger") in all_contact_pairs
+        touch_right_gripper = ("lego_square", "ned_right/10_right_finger") in all_contact_pairs
+        touch_table = ("lego_square", "table") in all_contact_pairs
 
         reward = 0
         if touch_right_gripper:

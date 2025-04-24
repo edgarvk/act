@@ -35,10 +35,10 @@ def make_sim_env(task_name):
                                         right_gripper_qvel (1)]     # normalized gripper velocity (pos: opening, neg: closing)
                         "images": {"main": (480x640x3)}        # h, w, c, dtype='uint8'
     """
-    if 'sim_transfer_cube' in task_name:
-        xml_path = os.path.join(XML_DIR, f'bimanual_viperx_transfer_cube.xml')
+    if 'sim_transfer_lego' in task_name:
+        xml_path = os.path.join(XML_DIR, f'bimanual_ned_transfer_lego.xml')
         physics = mujoco.Physics.from_xml_path(xml_path)
-        task = TransferCubeTask(random=False)
+        task = TransferLegoTask(random=False)
         env = control.Environment(physics, task, time_limit=20, control_timestep=DT,
                                   n_sub_steps=None, flat_observation=False)
     elif 'sim_insertion' in task_name:
@@ -51,7 +51,7 @@ def make_sim_env(task_name):
         raise NotImplementedError
     return env
 
-class BimanualViperXTask(base.Task):
+class BimanualNiryoNedTask(base.Task):
     def __init__(self, random=None):
         super().__init__(random=random)
 
@@ -118,7 +118,7 @@ class BimanualViperXTask(base.Task):
         raise NotImplementedError
 
 
-class TransferCubeTask(BimanualViperXTask):
+class TransferLegoTask(BimanualNiryoNedTask):
     def __init__(self, random=None):
         super().__init__(random=random)
         self.max_reward = 4
@@ -151,9 +151,9 @@ class TransferCubeTask(BimanualViperXTask):
             contact_pair = (name_geom_1, name_geom_2)
             all_contact_pairs.append(contact_pair)
 
-        touch_left_gripper = ("red_box", "vx300s_left/10_left_gripper_finger") in all_contact_pairs
-        touch_right_gripper = ("red_box", "vx300s_right/10_right_gripper_finger") in all_contact_pairs
-        touch_table = ("red_box", "table") in all_contact_pairs
+        touch_left_gripper = ("lego_square", "ned_left/9_left_finger") in all_contact_pairs
+        touch_right_gripper = ("lego_square", "ned_right/10_right_finger") in all_contact_pairs
+        touch_table = ("lego_square", "table") in all_contact_pairs
 
         reward = 0
         if touch_right_gripper:

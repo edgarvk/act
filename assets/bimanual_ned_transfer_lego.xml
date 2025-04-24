@@ -1,0 +1,49 @@
+<mujoco>
+    <include file="scene.xml"/>
+    <include file="ned_dependencies.xml"/>
+
+    <asset>
+        <mesh name="lego_2x2" file="lego_2x2.obj"/>
+    </asset>
+
+    <worldbody>
+        <include file="ned_left.xml" />
+        <include file="ned_right.xml" />
+
+        <body name="lego_square" pos="0.2 0.15 0">
+            <joint name="lego_square" type="free"/>
+            <inertial mass="0.00135" pos="0 0 0" diaginertia="0.0001 0.0001 0.0001"/>
+            <geom type="mesh" mesh="lego_2x2" size="1" class="visual" euler="1.57 0 0" rgba="0.75 0 0 1"/>
+            <geom type="box" size="0.0075 0.0075 0.006" class="collision"
+                  condim="4" solimp="2 1 0.01" solref="0.01 1" friction="1 0.005 0.0001"/>
+        </body>
+    </worldbody>
+
+    <actuator>
+        <!-- ned_left actuators -->
+        <position class="waist" name="ned_left/waist" joint="ned_left/waist"/>
+        <position class="shoulder" name="ned_left/shoulder" joint="ned_left/shoulder"/>
+        <position class="elbow" name="ned_left/elbow" joint="ned_left/elbow"/>
+        <position class="forearm_roll" name="ned_left/forearm_roll" joint="ned_left/forearm_roll"/>
+        <position class="wrist_angle" name="ned_left/wrist_angle" joint="ned_left/wrist_angle"/>
+        <position class="wrist_rotate" name="ned_left/wrist_rotate" joint="ned_left/wrist_rotate"/>
+        <position class="finger" name="ned_left/left_finger" joint="ned_left/left_finger"/>
+      
+        <!-- ned_right actuators -->
+        <position class="waist" name="ned_right/waist" joint="ned_right/waist"/>
+        <position class="shoulder" name="ned_right/shoulder" joint="ned_right/shoulder"/>
+        <position class="elbow" name="ned_right/elbow" joint="ned_right/elbow"/>
+        <position class="forearm_roll" name="ned_right/forearm_roll" joint="ned_right/forearm_roll"/>
+        <position class="wrist_angle" name="ned_right/wrist_angle" joint="ned_right/wrist_angle"/>
+        <position class="wrist_rotate" name="ned_right/wrist_rotate" joint="ned_right/wrist_rotate"/>
+        <position class="finger" name="ned_right/left_finger" joint="ned_right/left_finger"/>
+    </actuator>
+
+    <keyframe>
+        <key name="default_pose"
+             qpos=" 0 -2.09 1.57 0 0 0 0.006 0.006
+                    0 -2.09 1.57 0 0 0 0.006 0.006
+                    0 0 0 0.7071 0.7071 0 0
+             "/>
+    </keyframe>      
+</mujoco>

@@ -1,8 +1,20 @@
 <mujocoinclude>
-<!--    <option timestep='0.0025' iterations="50" tolerance="1e-10" solver="Newton" jacobian="dense" cone="elliptic"/>-->
+    <statistic center="0 -0.1 0.2" extent="0.6" meansize="0.05"/>
 
     <asset>
-        <mesh file="tabletop.stl" name="tabletop" scale="0.001 0.001 0.001"/>
+        <!-- Meshes -->
+        <mesh file="tabletop.obj"/>
+        <mesh file="tablelegs.obj"/>
+    
+        <!-- Environment textures -->
+        <texture type="skybox" builtin="gradient" rgb1="0.3 0.5 0.7" rgb2="0 0 0" width="512" height="3072"/>
+        <texture type="2d" name="groundplane" builtin="checker" mark="edge"
+                 rgb1="0.2 0.3 0.4" rgb2="0.1 0.2 0.3" markrgb="0.8 0.8 0.8"
+                 width="300" height="300"/>
+        <texture type="2d" file="small_meta_table_diffuse.png"/>
+    
+        <material name="groundplane" texture="groundplane" texuniform="true" texrepeat="5 5" reflectance="0.2"/>
+        <material name="table" texture="small_meta_table_diffuse"/>
     </asset>
 
     <visual>
@@ -12,27 +24,28 @@
     </visual>
 
     <worldbody>
-        <light castshadow="false" directional='true' diffuse='.3 .3 .3' specular='0.3 0.3 0.3' pos='-1 -1 1'
-               dir='1 1 -1'/>
-        <light directional='true' diffuse='.3 .3 .3' specular='0.3 0.3 0.3' pos='1 -1 1' dir='-1 1 -1'/>
-        <light castshadow="false" directional='true' diffuse='.3 .3 .3' specular='0.3 0.3 0.3' pos='0 1 1'
-               dir='0 -1 -1'/>
+        <!-- Floor -->
+        <geom name="floor" size="2 2 0.05" type="plane" material="groundplane" pos="0 0 -0.75"/>
+        <site name="worldref" pos="0 0 -0.75"/>
+  
+        <!-- Table -->
+        <geom mesh="tabletop" material="table" class="visual" pos="0 0 -0.7507" quat="1 0 0 1"/>
+        <geom mesh="tablelegs" material="table" class="visual" pos="0 0 -0.7507" quat="1 0 0 1"/>
+      
+        <!-- Table collision box (aligned with tabletop mesh) -->
+        <geom name="table" pos="0 0 -0.008" size="0.81 0.381 0.008" class="collision" type="box"
+            condim="6" friction="1 0.005 0.0005" solref="0.01 1"/>
 
-        <body name="table" pos="0 .6 0">
-            <geom group="1" mesh="tabletop" pos="0 0 0" type="mesh" conaffinity="1" contype="1" name="table" rgba="0.2 0.2 0.2 1" />
-        </body>
-        <body name="midair" pos="0 .6 0.2">
-            <site pos="0 0 0" size="0.01" type="sphere" name="midair" rgba="1 0 0 0"/>
-        </body>
-
-        <camera name="left_pillar" pos="-0.5 0.2 0.6" fovy="78" mode="targetbody" target="table"/>
-        <camera name="right_pillar" pos="0.5 0.2 0.6" fovy="78" mode="targetbody" target="table"/>
-        <camera name="top" pos="0 0.6 0.8" fovy="78" mode="targetbody" target="table"/>
-        <camera name="angle" pos="0 0 0.6" fovy="78" mode="targetbody" target="table"/>
-        <camera name="front_close" pos="0 0.2 0.4" fovy="78" mode="targetbody" target="vx300s_left/camera_focus"/>
-
+        <!-- Lights -->
+        <light name="main_light" pos="0 0 1.5" dir="0 0 -1"
+               directional="true" castshadow="true"
+               diffuse="0.9 0.9 0.9" specular="0.4 0.4 0.4"/>
+ 
+        <light name="fill_light" pos="1 -1 1.0" dir="-1 1 -0.5"
+               directional="true" diffuse="0.5 0.5 0.5"/>
+ 
+        <!-- Cameras -->
+        <camera name="overhead_cam" pos="0.25 -0.3 0.6" mode="fixed" xyaxes="1 0 0 0 0.894 0.447"/>
+        <camera name="side_cam" pos="0.3 -0.6 0.1" mode="fixed" xyaxes="1 0 0  0 0 1"/>
     </worldbody>
-
-
-
 </mujocoinclude>
