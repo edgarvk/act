@@ -168,7 +168,7 @@ class TransferLegoTask(BimanualNiryoNedTask):
         return reward
 
 
-class InsertionTask(BimanualViperXTask):
+class InsertionTask(BimanualNiryoNedTask):
     def __init__(self, random=None):
         super().__init__(random=random)
         self.max_reward = 4

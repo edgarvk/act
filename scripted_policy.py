@@ -80,7 +80,7 @@ class PickAndTransferPolicy(BasePolicy):
 
         meet_left_quat = Quaternion(axis=[1.0, 0.0, 0.0], degrees=90)
 
-        meet_xyz = np.array([0, 0.5, 0.25])
+        meet_xyz = np.array([0, 0, 0.2])
 
         self.left_trajectory = [
             {"t": 0, "xyz": init_mocap_pose_left[:3], "quat": init_mocap_pose_left[3:], "gripper": 0}, # sleep
@@ -94,9 +94,9 @@ class PickAndTransferPolicy(BasePolicy):
         self.right_trajectory = [
             {"t": 0, "xyz": init_mocap_pose_right[:3], "quat": init_mocap_pose_right[3:], "gripper": 0}, # sleep
             {"t": 90, "xyz": box_xyz + np.array([0, 0, 0.08]), "quat": gripper_pick_quat.elements, "gripper": 1}, # approach the cube
-            {"t": 130, "xyz": box_xyz + np.array([0, 0, -0.015]), "quat": gripper_pick_quat.elements, "gripper": 1}, # go down
-            {"t": 170, "xyz": box_xyz + np.array([0, 0, -0.015]), "quat": gripper_pick_quat.elements, "gripper": 0}, # close gripper
-            {"t": 200, "xyz": meet_xyz + np.array([0.05, 0, 0]), "quat": gripper_pick_quat.elements, "gripper": 0}, # approach meet position
+            {"t": 130, "xyz": box_xyz + np.array([0, 0, 0.003]), "quat": gripper_pick_quat.elements, "gripper": 1}, # go down
+            {"t": 170, "xyz": box_xyz + np.array([0, 0, 0.003]), "quat": gripper_pick_quat.elements, "gripper": 0}, # close gripper
+            {"t": 200, "xyz": meet_xyz + np.array([0.1, 0, 0]), "quat": gripper_pick_quat.elements, "gripper": 0}, # approach meet position
             {"t": 220, "xyz": meet_xyz, "quat": gripper_pick_quat.elements, "gripper": 0}, # move to meet position
             {"t": 310, "xyz": meet_xyz, "quat": gripper_pick_quat.elements, "gripper": 1}, # open gripper
             {"t": 360, "xyz": meet_xyz + np.array([0.1, 0, 0]), "quat": gripper_pick_quat.elements, "gripper": 1}, # move to right
@@ -156,8 +156,8 @@ def test_policy(task_name):
 
     # setup the environment
     episode_len = SIM_TASK_CONFIGS[task_name]['episode_len']
-    if 'sim_transfer_cube' in task_name:
-        env = make_ee_sim_env('sim_transfer_cube')
+    if 'sim_transfer_lego' in task_name:
+        env = make_ee_sim_env('sim_transfer_lego')
     elif 'sim_insertion' in task_name:
         env = make_ee_sim_env('sim_insertion')
     else:

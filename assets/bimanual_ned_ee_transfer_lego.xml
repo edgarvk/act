@@ -15,6 +15,10 @@
         <include file="ned_left.xml" />
         <include file="ned_right.xml" />
 
+        <body name="something">
+            <site name="pickup_target" pos="0.05 0 0.2" size="0.01" rgba="1 0 0 1"/>
+        </body>
+
         <body mocap="true" name="mocap_left" pos="-0.05 0 0.2">
             <site pos="0 0 0" size="0.003 0.003 0.03" type="box" name="mocap_left_site1" rgba="1 0 0 1"/>
             <site pos="0 0 0" size="0.003 0.03 0.003" type="box" name="mocap_left_site2" rgba="1 0 0 1"/>
@@ -36,15 +40,17 @@
     </worldbody>
 
     <actuator>
-        <position ctrllimited="true" ctrlrange="0 0.01191" joint="ned_left/left_finger" kp="200"  user="1"/>
-        <position ctrllimited="true" ctrlrange="0 0.01191" joint="ned_right/left_finger" kp="200"  user="1"/>
+        <position ctrllimited="true" ctrlrange="0 0.01191" joint="ned_left/left_finger" kp="200" user="1"/>
+        <position ctrllimited="true" ctrlrange="0 0.01191" joint="ned_left/right_finger" kp="200" user="1"/>
+        <position ctrllimited="true" ctrlrange="0 0.01191" joint="ned_right/left_finger" kp="200" user="1"/>
+        <position ctrllimited="true" ctrlrange="0 0.01191" joint="ned_right/right_finger" kp="200" user="1"/>
     </actuator>
 
     <keyframe>
         <key name="default_pose"
              qpos=" 0 -2.09 1.57 0 0 0 0.006 0.006
                     0 -2.09 1.57 0 0 0 0.006 0.006
-                    0 0 0 0.7071 0.7071 0 0
+                    0.2 0.15 0 0.7071 0.7071 0 0
              "/>
     </keyframe>
 </mujoco>

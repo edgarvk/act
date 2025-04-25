@@ -163,7 +163,7 @@ class TransferLegoEETask(BimanualNiryoNedEETask):
         self.initialize_robots(physics)
         # randomize box position
         cube_pose = sample_box_pose()
-        box_start_idx = physics.model.name2id('red_box_joint', 'joint')
+        box_start_idx = physics.model.name2id('lego_square', 'joint')
         np.copyto(physics.data.qpos[box_start_idx : box_start_idx + 7], cube_pose)
         # print(f"randomized cube position to {cube_position}")
 
@@ -201,7 +201,7 @@ class TransferLegoEETask(BimanualNiryoNedEETask):
         return reward
 
 
-class InsertionEETask(BimanualViperXEETask):
+class InsertionEETask(BimanualNiryoNedEETask):
     def __init__(self, random=None):
         super().__init__(random=random)
         self.max_reward = 4

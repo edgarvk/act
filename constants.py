@@ -3,8 +3,8 @@ import pathlib
 ### Task parameters
 DATA_DIR = '/home/edgar/ArmLearning/act'
 SIM_TASK_CONFIGS = {
-    'sim_transfer_cube_scripted':{
-        'dataset_dir': DATA_DIR + '/sim_transfer_cube_scripted',
+    'sim_transfer_lego_scripted':{
+        'dataset_dir': DATA_DIR + '/sim_transfer_lego_scripted',
         'num_episodes': 50,
         'episode_len': 400,
         'camera_names': ['top']

@@ -1,5 +1,5 @@
 <mujocoinclude>
-    <compiler meshdir="assets" texturedir="assets" angle="radian" inertiafromgeom="auto"/>
+    <compiler meshdir="." texturedir="." angle="radian" inertiafromgeom="auto"/>
 
     <asset>
         <!-- Shared materials -->

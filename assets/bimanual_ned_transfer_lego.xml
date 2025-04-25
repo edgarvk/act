@@ -27,7 +27,8 @@
         <position class="forearm_roll" name="ned_left/forearm_roll" joint="ned_left/forearm_roll"/>
         <position class="wrist_angle" name="ned_left/wrist_angle" joint="ned_left/wrist_angle"/>
         <position class="wrist_rotate" name="ned_left/wrist_rotate" joint="ned_left/wrist_rotate"/>
-        <position class="finger" name="ned_left/left_finger" joint="ned_left/left_finger"/>
+        <position class="left_finger" name="ned_left/left_finger" joint="ned_left/left_finger"/>
+        <position class="right_finger" name="ned_left/right_finger" joint="ned_left/right_finger"/>
       
         <!-- ned_right actuators -->
         <position class="waist" name="ned_right/waist" joint="ned_right/waist"/>
@@ -36,14 +37,15 @@
         <position class="forearm_roll" name="ned_right/forearm_roll" joint="ned_right/forearm_roll"/>
         <position class="wrist_angle" name="ned_right/wrist_angle" joint="ned_right/wrist_angle"/>
         <position class="wrist_rotate" name="ned_right/wrist_rotate" joint="ned_right/wrist_rotate"/>
-        <position class="finger" name="ned_right/left_finger" joint="ned_right/left_finger"/>
+        <position class="left_finger" name="ned_right/left_finger" joint="ned_right/left_finger"/>
+        <position class="right_finger" name="ned_right/right_finger" joint="ned_right/right_finger"/>
     </actuator>
 
     <keyframe>
         <key name="default_pose"
              qpos=" 0 -2.09 1.57 0 0 0 0.006 0.006
                     0 -2.09 1.57 0 0 0 0.006 0.006
-                    0 0 0 0.7071 0.7071 0 0
+                    0.2 0.15 0 0.7071 0.7071 0 0
              "/>
     </keyframe>      
 </mujoco>
