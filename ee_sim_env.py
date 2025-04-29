@@ -60,28 +60,22 @@ class BimanualNiryoNedEETask(base.Task):
         self.step_size = 0.002  # 2 mm per step at each control timestep
 
     def before_step(self, action, physics):
-        """Move end-effectors by setting mocap positions and control grippers."""
-
         a_len = len(action) // 2
         action_left = action[:a_len]
         action_right = action[a_len:]
 
-        # Move mocap for left arm
+        # set mocap position and quat
+        # left
         np.copyto(physics.data.mocap_pos[0], action_left[:3])
         np.copyto(physics.data.mocap_quat[0], action_left[3:7])
-
-        # Move mocap for right arm
+        # right
         np.copyto(physics.data.mocap_pos[1], action_right[:3])
         np.copyto(physics.data.mocap_quat[1], action_right[3:7])
 
-        # Gripper control (only 4 actuators available)
-        gripper_ctrl = np.array([
-            action_left[7], -action_left[7],
-            action_right[7], -action_right[7]
-        ])
-        physics.data.ctrl[:] = gripper_ctrl
-
-
+        # set gripper
+        g_left_ctrl = PUPPET_GRIPPER_POSITION_UNNORMALIZE_FN(action_left[7])
+        g_right_ctrl = PUPPET_GRIPPER_POSITION_UNNORMALIZE_FN(action_right[7])
+        np.copyto(physics.data.ctrl, np.array([g_left_ctrl, -g_left_ctrl, g_right_ctrl, -g_right_ctrl]))
 
     def initialize_robots(self, physics):
         # reset joint position

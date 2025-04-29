@@ -6,7 +6,7 @@ SIM_TASK_CONFIGS = {
     'sim_transfer_lego_scripted':{
         'dataset_dir': DATA_DIR + '/sim_transfer_lego_scripted',
         'num_episodes': 50,
-        'episode_len': 800,
+        'episode_len': 400,
         'camera_names': ['top']
     },
 
@@ -35,7 +35,7 @@ SIM_TASK_CONFIGS = {
 ### Simulation envs fixed constants
 DT = 0.02
 JOINT_NAMES = ["waist", "shoulder", "elbow", "forearm_roll", "wrist_angle", "wrist_rotate"]
-START_ARM_POSE = [0, -2.09, 1.57, 0, 0, 0, 0.006, 0.006,  0, -2.09, 1.57, 0, 0, 0, 0.006, 0.006]
+START_ARM_POSE = [0, -2.09, 0.755, 0, 0, 0, 0.006, 0.006,  0, -2.09, 0.755, 0, 0, 0, 0.006, 0.006]
 
 XML_DIR = str(pathlib.Path(__file__).parent.resolve()) + '/assets' # note: absolute path
 
