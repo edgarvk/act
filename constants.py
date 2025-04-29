@@ -6,7 +6,7 @@ SIM_TASK_CONFIGS = {
     'sim_transfer_lego_scripted':{
         'dataset_dir': DATA_DIR + '/sim_transfer_lego_scripted',
         'num_episodes': 50,
-        'episode_len': 400,
+        'episode_len': 800,
         'camera_names': ['top']
     },
 

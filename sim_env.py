@@ -52,24 +52,65 @@ def make_sim_env(task_name):
     return env
 
 class BimanualNiryoNedTask(base.Task):
+    import numpy as np
+
+class BimanualNiryoNedTask(base.Task):
     def __init__(self, random=None):
         super().__init__(random=random)
+        self.joint_step_size = 0.01  # radians per control step (~0.5 deg)
 
     def before_step(self, action, physics):
-        left_arm_action = action[:6]
-        right_arm_action = action[7:7+6]
-        normalized_left_gripper_action = action[6]
-        normalized_right_gripper_action = action[7+6]
+        """Simulate Niryo Ned's firmware style control: stepwise joint tracking and gripper control."""
 
-        left_gripper_action = PUPPET_GRIPPER_POSITION_UNNORMALIZE_FN(normalized_left_gripper_action)
-        right_gripper_action = PUPPET_GRIPPER_POSITION_UNNORMALIZE_FN(normalized_right_gripper_action)
+        # Parameters
+        step_size = 0.01  # radians per control step (~0.5 deg)
+        n_arm_joints = 6  # number of joints per arm
 
-        full_left_gripper_action = [left_gripper_action, -left_gripper_action]
-        full_right_gripper_action = [right_gripper_action, -right_gripper_action]
+        # Parse action
+        a_len = len(action) // 2
+        action_left = action[:a_len]
+        action_right = action[a_len:]
 
-        env_action = np.concatenate([left_arm_action, full_left_gripper_action, right_arm_action, full_right_gripper_action])
-        super().before_step(env_action, physics)
-        return
+        target_left = action_left[:n_arm_joints]  # left arm joint targets
+        target_right = action_right[:n_arm_joints]  # right arm joint targets
+        gripper_left_target = action_left[n_arm_joints]
+        gripper_right_target = action_right[n_arm_joints]
+
+        # Get current joint positions
+        current_qpos_left = physics.data.qpos[0:6]
+        current_qpos_right = physics.data.qpos[8:14]
+
+        # Step left arm joints
+        delta_left = target_left - current_qpos_left
+        for i in range(6):
+            if np.abs(delta_left[i]) > step_size:
+                direction = np.sign(delta_left[i])
+                physics.data.qpos[i] += direction * step_size
+            else:
+                physics.data.qpos[i] = target_left[i]
+
+        # Step right arm joints
+        delta_right = target_right - current_qpos_right
+        for i in range(6):
+            if np.abs(delta_right[i]) > step_size:
+                direction = np.sign(delta_right[i])
+                physics.data.qpos[8 + i] += direction * step_size
+            else:
+                physics.data.qpos[8 + i] = target_right[i]
+
+        # Gripper control
+        gripper_ctrl = np.array([
+            gripper_left_target, -gripper_left_target,
+            gripper_right_target, -gripper_right_target
+        ])
+
+        # Only overwrite the gripper control slots
+        physics.data.ctrl[6] = gripper_ctrl[0]   # left gripper slider +
+        physics.data.ctrl[7] = gripper_ctrl[1]   # left gripper slider -
+        physics.data.ctrl[14] = gripper_ctrl[2]  # right gripper slider +
+        physics.data.ctrl[15] = gripper_ctrl[3]  # right gripper slider -
+
+
 
     def initialize_episode(self, physics):
         """Sets the state of the environment at the start of each episode."""

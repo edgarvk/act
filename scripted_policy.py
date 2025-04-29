@@ -21,6 +21,10 @@ class BasePolicy:
 
     @staticmethod
     def interpolate(curr_waypoint, next_waypoint, t):
+        if next_waypoint["t"] == curr_waypoint["t"]:
+            # No interpolation needed, just hold current pose
+            return curr_waypoint['xyz'], curr_waypoint['quat'], curr_waypoint['gripper']
+        
         t_frac = (t - curr_waypoint["t"]) / (next_waypoint["t"] - curr_waypoint["t"])
         curr_xyz = curr_waypoint['xyz']
         curr_quat = curr_waypoint['quat']
@@ -33,21 +37,28 @@ class BasePolicy:
         gripper = curr_grip + (next_grip - curr_grip) * t_frac
         return xyz, quat, gripper
 
+
     def __call__(self, ts):
-        # generate trajectory at first timestep, then open-loop execution
         if self.step_count == 0:
             self.generate_trajectory(ts)
 
-        # obtain left and right waypoints
-        if self.left_trajectory[0]['t'] == self.step_count:
+        # LEFT
+        if self.left_trajectory and self.left_trajectory[0]['t'] == self.step_count:
             self.curr_left_waypoint = self.left_trajectory.pop(0)
-        next_left_waypoint = self.left_trajectory[0]
+        if self.left_trajectory:
+            next_left_waypoint = self.left_trajectory[0]
+        else:
+            next_left_waypoint = self.curr_left_waypoint  # Hold position if no more waypoints
 
-        if self.right_trajectory[0]['t'] == self.step_count:
+        # RIGHT
+        if self.right_trajectory and self.right_trajectory[0]['t'] == self.step_count:
             self.curr_right_waypoint = self.right_trajectory.pop(0)
-        next_right_waypoint = self.right_trajectory[0]
+        if self.right_trajectory:
+            next_right_waypoint = self.right_trajectory[0]
+        else:
+            next_right_waypoint = self.curr_right_waypoint  # Hold position if no more waypoints
 
-        # interpolate between waypoints to obtain current pose and gripper command
+        # interpolate
         left_xyz, left_quat, left_gripper = self.interpolate(self.curr_left_waypoint, next_left_waypoint, self.step_count)
         right_xyz, right_quat, right_gripper = self.interpolate(self.curr_right_waypoint, next_right_waypoint, self.step_count)
 
@@ -65,7 +76,6 @@ class BasePolicy:
 
 
 class PickAndTransferPolicy(BasePolicy):
-
     def generate_trajectory(self, ts_first):
         init_mocap_pose_right = ts_first.observation['mocap_pose_right']
         init_mocap_pose_left = ts_first.observation['mocap_pose_left']
@@ -73,35 +83,41 @@ class PickAndTransferPolicy(BasePolicy):
         box_info = np.array(ts_first.observation['env_state'])
         box_xyz = box_info[:3]
         box_quat = box_info[3:]
-        # print(f"Generate trajectory for {box_xyz=}")
 
+        # --- Updated parameters ---
+        lego_block_height = 0.006  # ~6mm block
+        hover_above_box = 0.04     # Hover 4 cm above block before descend
+        grasp_height = lego_block_height + 0.005  # Grab 5mm above the ground
+        
+        meet_xyz = np.array([-0.2, 0, 0.2])  # Closer to the table and between the arms
+
+        # Gripper orientation adjustments
         gripper_pick_quat = Quaternion(init_mocap_pose_right[3:])
-        gripper_pick_quat = gripper_pick_quat * Quaternion(axis=[0.0, 1.0, 0.0], degrees=-60)
-
-        meet_left_quat = Quaternion(axis=[1.0, 0.0, 0.0], degrees=90)
-
-        meet_xyz = np.array([0, 0, 0.2])
-
+        gripper_pick_quat = gripper_pick_quat * Quaternion(axis=[0, 1, 0], degrees=-90)  # smaller tilt
+        
+        meet_left_quat = Quaternion(axis=[1, 0, 0], degrees=90)  # left gripper facing down
+        
+        # --- Build left arm trajectory (passive first) ---
         self.left_trajectory = [
-            {"t": 0, "xyz": init_mocap_pose_left[:3], "quat": init_mocap_pose_left[3:], "gripper": 0}, # sleep
-            {"t": 100, "xyz": meet_xyz + np.array([-0.1, 0, -0.02]), "quat": meet_left_quat.elements, "gripper": 1}, # approach meet position
-            {"t": 260, "xyz": meet_xyz + np.array([0.02, 0, -0.02]), "quat": meet_left_quat.elements, "gripper": 1}, # move to meet position
-            {"t": 310, "xyz": meet_xyz + np.array([0.02, 0, -0.02]), "quat": meet_left_quat.elements, "gripper": 0}, # close gripper
-            {"t": 360, "xyz": meet_xyz + np.array([-0.1, 0, -0.02]), "quat": np.array([1, 0, 0, 0]), "gripper": 0}, # move left
-            {"t": 400, "xyz": meet_xyz + np.array([-0.1, 0, -0.02]), "quat": np.array([1, 0, 0, 0]), "gripper": 0}, # stay
+            {"t": 0, "xyz": init_mocap_pose_left[:3], "quat": init_mocap_pose_left[3:], "gripper": 1},  # open gripper
+            {"t": 200, "xyz": meet_xyz + np.array([-0.05, 0, 0]), "quat": meet_left_quat.elements, "gripper": 1}, # move closer
+            {"t": 400, "xyz": meet_xyz + np.array([-0.02, 0, 0]), "quat": meet_left_quat.elements, "gripper": 1}, # ready to receive
+            {"t": 520, "xyz": meet_xyz + np.array([-0.02, 0, 0]), "quat": meet_left_quat.elements, "gripper": 0}, # close gripper
+            {"t": 640, "xyz": meet_xyz + np.array([-0.1, 0, 0.05]), "quat": meet_left_quat.elements, "gripper": 0}, # lift away
         ]
 
+        # --- Build right arm trajectory (active pick and place) ---
         self.right_trajectory = [
-            {"t": 0, "xyz": init_mocap_pose_right[:3], "quat": init_mocap_pose_right[3:], "gripper": 0}, # sleep
-            {"t": 90, "xyz": box_xyz + np.array([0, 0, 0.08]), "quat": gripper_pick_quat.elements, "gripper": 1}, # approach the cube
-            {"t": 130, "xyz": box_xyz + np.array([0, 0, 0.003]), "quat": gripper_pick_quat.elements, "gripper": 1}, # go down
-            {"t": 170, "xyz": box_xyz + np.array([0, 0, 0.003]), "quat": gripper_pick_quat.elements, "gripper": 0}, # close gripper
-            {"t": 200, "xyz": meet_xyz + np.array([0.1, 0, 0]), "quat": gripper_pick_quat.elements, "gripper": 0}, # approach meet position
-            {"t": 220, "xyz": meet_xyz, "quat": gripper_pick_quat.elements, "gripper": 0}, # move to meet position
-            {"t": 310, "xyz": meet_xyz, "quat": gripper_pick_quat.elements, "gripper": 1}, # open gripper
-            {"t": 360, "xyz": meet_xyz + np.array([0.1, 0, 0]), "quat": gripper_pick_quat.elements, "gripper": 1}, # move to right
-            {"t": 400, "xyz": meet_xyz + np.array([0.1, 0, 0]), "quat": gripper_pick_quat.elements, "gripper": 1}, # stay
+            {"t": 0, "xyz": init_mocap_pose_right[:3], "quat": init_mocap_pose_right[3:], "gripper": 1},  # open gripper
+            {"t": 100, "xyz": box_xyz + np.array([0, 0, hover_above_box]), "quat": gripper_pick_quat.elements, "gripper": 1},  # hover
+            {"t": 200, "xyz": box_xyz + np.array([0, 0, grasp_height]), "quat": gripper_pick_quat.elements, "gripper": 1},  # descend
+            {"t": 300, "xyz": box_xyz + np.array([0, 0, grasp_height]), "quat": gripper_pick_quat.elements, "gripper": 0},  # close gripper
+            {"t": 400, "xyz": box_xyz + np.array([0, 0, hover_above_box]), "quat": gripper_pick_quat.elements, "gripper": 0},  # lift
+            {"t": 500, "xyz": meet_xyz + np.array([0.02, 0, 0.00]), "quat": gripper_pick_quat.elements, "gripper": 0},  # move to meeting point
+            {"t": 620, "xyz": meet_xyz + np.array([0.02, 0, 0.00]), "quat": gripper_pick_quat.elements, "gripper": 1},  # open gripper
+            {"t": 700, "xyz": meet_xyz + np.array([0.1, 0, 0.05]), "quat": gripper_pick_quat.elements, "gripper": 1},  # retreat
         ]
+
 
 
 class InsertionPolicy(BasePolicy):
