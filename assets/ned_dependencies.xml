@@ -62,32 +62,32 @@
             <joint actuatorfrcrange="-35 35"/>
             <site group="1"/>
             <default class="waist">
-                <joint range="-2.97 2.97" damping="8" actuatorfrcrange="-2 2"/>
-                <position ctrlrange="-2.97 2.97" kp="80"/>
+                <joint range="-2.97 2.97" damping="30" actuatorfrcrange="-20 20"/>
+                <position ctrlrange="-2.97 2.97" kp="3000"/>
             </default>
             <default class="shoulder">
-                <joint axis="0 1 0" range="-2.09 0.61" armature="0.395" damping="10.0" actuatorfrcrange="-3.0 3.0"/>
-                <position ctrlrange="-2.09 0.61" kp="600"/>
+                <joint axis="0 1 0" range="-2.09 0.61" armature="0.395" damping="40" actuatorfrcrange="-20 20"/>
+                <position ctrlrange="-2.09 0.61" kp="4000"/>
             </default>
             <default class="elbow">
-                <joint axis="0 1 0" range="-1.34 1.57" armature="0.14" damping="6.0" actuatorfrcrange="-2.0 2.0"/>
-                <position ctrlrange="-1.34 1.57" kp="400"/>
+                <joint axis="0 1 0" range="-1.34 1.57" armature="0.14" damping="25" actuatorfrcrange="-20 20"/>
+                <position ctrlrange="-1.34 1.57" kp="4000"/>
             </default>
             <default class="forearm_roll">
-                <joint axis="1 0 0" range="-2.09 2.09" armature="0.14" damping="4.0" actuatorfrcrange="-2.5 2.5"/>
-                <position ctrlrange="-2.09 2.09" kp="800"/>
+                <joint axis="1 0 0" range="-2.09 2.09" armature="0.14" damping="15" actuatorfrcrange="-20 20"/>
+                <position ctrlrange="-2.09 2.09" kp="5000"/>
             </default>
             <default class="wrist_angle">
-                <joint axis="0 1 0" range="-1.75 0.96" armature="0.008" damping="3.0" actuatorfrcrange="-2.5 2.5"/>
-                <position ctrlrange="-1.75 0.96" kp="700"/>
+                <joint axis="0 1 0" range="-1.75 0.96" armature="0.008" damping="20" actuatorfrcrange="-20 20"/>
+                <position ctrlrange="-1.75 0.96" kp="4000"/>
             </default>
             <default class="wrist_rotate">
-                <joint axis="1 0 0" range="-2.53 2.53" damping="2.0" actuatorfrcrange="-1.0 1.0"/>
-                <position ctrlrange="-2.53 2.53" kp="500"/>
+                <joint axis="1 0 0" range="-2.53 2.53" damping="15" actuatorfrcrange="-20 20"/>
+                <position ctrlrange="-2.53 2.53" kp="3000"/>
             </default>
             <default class="finger">
                 <joint type="slide" armature="0.243" damping="40"/>
-                <position ctrlrange="0 0.01191" kp="2000" kv="124"/>
+                <position ctrlrange="0 0.01191" kp="3000"/>
                 <default class="left_finger">
                     <joint range="0 0.01191" axis="0 0 -1"/>
                 </default>

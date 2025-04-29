@@ -1,5 +1,5 @@
 <mujocoinclude>
-    <body name="ned_right/waist" childclass="niryo_ned" pos="0.55 0 0" euler="0 0 3.14159">
+    <body name="ned_right/waist" childclass="niryo_ned" pos="0.3 0 0" euler="0 0 3.14159">
         <inertial pos="-0.0024 -0.0059 0.0516" mass="0.999" diaginertia="0.002 0.002 0.004"/>
         <geom class="visual" mesh="base_black" material="printed_black"/>
         <geom class="visual" mesh="base_blue" material="printed_blue"/>

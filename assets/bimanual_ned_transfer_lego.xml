@@ -10,7 +10,7 @@
         <include file="ned_left.xml" />
         <include file="ned_right.xml" />
 
-        <body name="lego_square" pos="0.2 0.15 0">
+        <body name="lego_square" pos="0.1 0.15 0">
             <joint name="lego_square" type="free"/>
             <inertial mass="0.00135" pos="0 0 0" diaginertia="0.0001 0.0001 0.0001"/>
             <geom type="mesh" mesh="lego_2x2" size="1" class="visual" euler="1.57 0 0" rgba="0.75 0 0 1"/>
@@ -45,7 +45,7 @@
         <key name="default_pose"
              qpos=" 0 -2.09 1.57 0 0 0 0.006 0.006
                     0 -2.09 1.57 0 0 0 0.006 0.006
-                    0.2 0.15 0 0.7071 0.7071 0 0
+                    0.1 0.15 0 0.7071 0.7071 0 0
              "/>
     </keyframe>      
 </mujoco>
