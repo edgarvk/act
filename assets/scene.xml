@@ -16,7 +16,7 @@
     </asset>
 
     <visual>
-        <map fogstart="1.5" fogend="5" force="0.1" znear="0.1"/>
+        <map fogstart="1.5" fogend="5" force="0.1" znear="0.001"/>
         <quality shadowsize="4096" offsamples="4"/>
         <headlight ambient="0.4 0.4 0.4"/>
     </visual>
@@ -31,7 +31,7 @@
         <geom mesh="tablelegs" material="table" class="visual" pos="0 0 -0.7507" quat="1 0 0 1"/>
       
         <!-- Table collision box (aligned with tabletop mesh) -->
-        <geom name="table" pos="0 0 -0.008" size="0.81 0.381 0.008" class="collision" type="box"
+        <geom name="table" pos="0 0 -0.008" size="0.61 0.381 0.008" class="collision" type="box"
             condim="6" friction="1 0.005 0.0005" solref="0.01 1"/>
 
         <!-- Lights -->

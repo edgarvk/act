@@ -15,12 +15,12 @@
         <include file="ned_left.xml" />
         <include file="ned_right.xml" />
 
-        <body mocap="true" name="mocap_left" pos="0.28 0 0.2">
+        <body mocap="true" name="mocap_left" pos="0.2675 0 0.2">
             <site pos="0 0 0" size="0.003 0.003 0.03" type="box" name="mocap_left_site1" rgba="1 0 0 1"/>
             <site pos="0 0 0" size="0.003 0.03 0.003" type="box" name="mocap_left_site2" rgba="1 0 0 1"/>
             <site pos="0 0 0" size="0.03 0.003 0.003" type="box" name="mocap_left_site3" rgba="1 0 0 1"/>
         </body>
-        <body mocap="true" name="mocap_right" pos="-0.28 0 0.2">
+        <body mocap="true" name="mocap_right" pos="-0.2675 0 0.2">
             <site pos="0 0 0" size="0.003 0.003 0.03" type="box" name="mocap_right_site1" rgba="1 0 0 1"/>
             <site pos="0 0 0" size="0.003 0.03 0.003" type="box" name="mocap_right_site2" rgba="1 0 0 1"/>
             <site pos="0 0 0" size="0.03 0.003 0.003" type="box" name="mocap_right_site3" rgba="1 0 0 1"/>
@@ -28,24 +28,24 @@
 
         <body name="lego_square" pos="0.1 0.15 0">
             <joint name="lego_square" type="free"/>
-            <inertial mass="0.00135" pos="0 0 0" diaginertia="0.0001 0.0001 0.0001"/>
+            <inertial mass="0.00135" pos="0 0 0" diaginertia="2e-5 2e-5 3e-5"/>
             <geom type="mesh" mesh="lego_2x2" size="1" class="visual" euler="1.57 0 0" rgba="0.75 0 0 1"/>
-            <geom type="box" size="0.0075 0.0075 0.006" class="collision"
-                  condim="4" solimp="2 1 0.01" solref="0.01 1" friction="1 0.005 0.0001"/>
+            <geom type="mesh" mesh="lego_2x2" size="1" class="collision" euler="1.57 0 0" name="lego_square"
+                  condim="4" solimp="0.96 0.998 0.0001" solref="0.0015 0.15" friction="2 0.2 0.02"/>
         </body>
     </worldbody>
 
     <actuator>
-        <position ctrllimited="true" ctrlrange="0 0.01191" joint="ned_left/left_finger" kp="200" user="1"/>
-        <position ctrllimited="true" ctrlrange="0 0.01191" joint="ned_left/right_finger" kp="200" user="1"/>
-        <position ctrllimited="true" ctrlrange="0 0.01191" joint="ned_right/left_finger" kp="200" user="1"/>
-        <position ctrllimited="true" ctrlrange="0 0.01191" joint="ned_right/right_finger" kp="200" user="1"/>
+        <position ctrllimited="true" ctrlrange="0 0.01191" joint="ned_left/left_finger" kp="3000" user="1"/>
+        <position ctrllimited="true" ctrlrange="0 0.01191" joint="ned_left/right_finger" kp="3000" user="1"/>
+        <position ctrllimited="true" ctrlrange="0 0.01191" joint="ned_right/left_finger" kp="3000" user="1"/>
+        <position ctrllimited="true" ctrlrange="0 0.01191" joint="ned_right/right_finger" kp="3000" user="1"/>
     </actuator>
 
     <keyframe>
         <key name="default_pose"
-             qpos=" 0 -2.09 1.57 0 0 0 0.006 0.006
-                    0 -2.09 1.57 0 0 0 0.006 0.006
+             qpos=" 0 -2.09 0.755 0 0 0 0.006 0.006
+                    0 -2.09 0.755 0 0 0 0.006 0.006
                     0.1 0.15 0 0.7071 0.7071 0 0
              "/>
     </keyframe>
