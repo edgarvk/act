@@ -65,13 +65,13 @@
                                         <joint name="ned_left/left_finger" class="left_finger"/>
                                         <geom class="visual" mesh="jaws_metal" material="metal_silver" euler="1.57 0 4.71"/>
                                         <geom class="visual" mesh="left_jaw_black" material="printed_black" euler="1.57 0 4.71"/>
-                                        <geom class="collision" mesh="left_jaw" euler="1.57 0 4.71"/>
+                                        <geom class="collision" mesh="left_jaw" euler="1.57 0 4.71" friction="3 0.2 0.01" condim="6" name="ned_left/left_finger"/>
                                     </body>
                                     <body name="ned_left/right_finger_link" pos="0.03 -0.007 -0.029">
                                         <joint name="ned_left/right_finger" class="right_finger"/>
                                         <geom class="visual" mesh="jaws_metal" material="metal_silver" euler="1.57 0 4.71"/>
                                         <geom class="visual" mesh="right_jaw_black" material="printed_black" euler="1.57 0 4.71"/>
-                                        <geom class="collision" mesh="right_jaw" euler="1.57 0 4.71"/>
+                                        <geom class="collision" mesh="right_jaw" euler="1.57 0 4.71" friction="3 0.2 0.01" condim="6" name="ned_left/right_finger"/>
                                     </body>
                                 </body>
                             </body>
