@@ -87,15 +87,15 @@ class PickAndTransferPolicy(BasePolicy):
 
         gripper_pick_quat = Quaternion(axis=[1, 0, 0], degrees=0) * Quaternion(axis=[0, 1, 0], degrees=-90)
         meet_left_quat = Quaternion(axis=[1.0, 0.0, 0.0], degrees=90)
-        meet_right_quat = Quaternion(axis=[1.0, 0.0, 0.0], degrees=-30)
+        meet_right_quat = Quaternion(axis=[1.0, 0.0, 1.0], degrees=0)
 
         meet_xyz = np.array([0, 0, 0.25])
 
         self.left_trajectory = [
             {"t": 0, "xyz": init_mocap_pose_left[:3], "quat": init_mocap_pose_left[3:], "gripper": 0}, # sleep
             {"t": 100, "xyz": meet_xyz + np.array([-0.1, 0, 0]), "quat": meet_left_quat.elements, "gripper": 1}, # approach meet position
-            {"t": 260, "xyz": meet_xyz + np.array([-0.005, -0.005, -0.02]), "quat": meet_left_quat.elements, "gripper": 1}, # move to meet position
-            {"t": 310, "xyz": meet_xyz + np.array([-0.005, -0.005, -0.02]), "quat": meet_left_quat.elements, "gripper": 0}, # close gripper
+            {"t": 260, "xyz": meet_xyz + np.array([-0.006, -0.005, -0.023]), "quat": meet_left_quat.elements, "gripper": 1}, # move to meet position
+            {"t": 310, "xyz": meet_xyz + np.array([-0.006, -0.005, -0.023]), "quat": meet_left_quat.elements, "gripper": 0}, # close gripper
             {"t": 360, "xyz": meet_xyz + np.array([-0.1, 0, 0]), "quat": np.array([1, 0, 0, 0]), "gripper": 0}, # move left
             {"t": 400, "xyz": meet_xyz + np.array([-0.1, 0, 0]), "quat": np.array([1, 0, 0, 0]), "gripper": 0}, # stay
         ]
@@ -103,8 +103,8 @@ class PickAndTransferPolicy(BasePolicy):
         self.right_trajectory = [
             {"t": 0, "xyz": init_mocap_pose_right[:3], "quat": init_mocap_pose_right[3:], "gripper": 0}, # sleep
             {"t": 30, "xyz": box_xyz + np.array([0.02, 0, 0.08]), "quat": gripper_pick_quat.elements, "gripper": 1}, # approach the cube
-            {"t": 100, "xyz": box_xyz + np.array([0.01, 0, 0.01]), "quat": gripper_pick_quat.elements, "gripper": 1}, # go down
-            {"t": 115, "xyz": box_xyz + np.array([0.01, 0, 0.01]), "quat": gripper_pick_quat.elements, "gripper": 1}, # hold
+            {"t": 90, "xyz": box_xyz + np.array([0.01, 0, 0.01]), "quat": gripper_pick_quat.elements, "gripper": 1}, # go down
+            {"t": 120, "xyz": box_xyz + np.array([0.01, 0, 0.01]), "quat": gripper_pick_quat.elements, "gripper": 1}, # hold
             {"t": 130, "xyz": box_xyz + np.array([0.01, 0, 0.01]), "quat": gripper_pick_quat.elements, "gripper": 0}, # close gripper
             #{"t": 150, "xyz": init_mocap_pose_right[:3], "quat": meet_right_quat.elements, "gripper": 0}, # sleep
             {"t": 220, "xyz": meet_xyz, "quat": meet_right_quat.elements, "gripper": 0}, # approach meet position

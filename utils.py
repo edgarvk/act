@@ -131,8 +131,8 @@ def load_data(dataset_dir, num_episodes, camera_names, batch_size_train, batch_s
 ### env utils
 
 def sample_box_pose():
-    x_range = [0.1, 0.1]
-    y_range = [0, 0]
+    x_range = [0, 0.15]
+    y_range = [-0.2, 0.2]
     z_range = [0, 0]
 
     ranges = np.vstack([x_range, y_range, z_range])
