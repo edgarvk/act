@@ -52,9 +52,6 @@ def make_ee_sim_env(task_name):
     return env
 
 class BimanualNiryoNedEETask(base.Task):
-    import numpy as np
-
-class BimanualNiryoNedEETask(base.Task):
     def __init__(self, random=None):
         super().__init__(random=random)
         self.step_size = 0.002  # 2 mm per step at each control timestep
@@ -88,11 +85,11 @@ class BimanualNiryoNedEETask(base.Task):
         #     get env._physics.named.data.xquat['vx300s_left/gripper_link']
         #     repeat the same for right side
         # Replace this block:
-        np.copyto(physics.data.mocap_pos[0], [-0.40829203, -0.00351209, 0.19029617])
-        np.copyto(physics.data.mocap_quat[0], [0.65820575, 0.64820394, 0.27353214, -0.26791231])
+        np.copyto(physics.data.mocap_pos[0], [-0.10279913, -0.0400003, 0.41659807])
+        np.copyto(physics.data.mocap_quat[0], [0.70710327, 0.70710587, 0.00176776, -0.00176777])
 
-        np.copyto(physics.data.mocap_pos[1], [0.40829204, 0.00351246, 0.19029617])
-        np.copyto(physics.data.mocap_quat[1], [0.26791318, -0.27353128, 0.6482043, 0.6582054])
+        np.copyto(physics.data.mocap_pos[1], [0.10279914, 0.00400055, 0.41659807])
+        np.copyto(physics.data.mocap_quat[1], [0.00176871, -0.00176682, 0.70710587, 0.70710327])
 
 
         # reset gripper control
@@ -189,8 +186,8 @@ class TransferLegoEETask(BimanualNiryoNedEETask):
             contact_pair = (name_geom_1, name_geom_2)
             all_contact_pairs.append(contact_pair)
 
-        touch_left_gripper = ("lego_square", "ned_left/9_left_finger") in all_contact_pairs
-        touch_right_gripper = ("lego_square", "ned_right/10_right_finger") in all_contact_pairs
+        touch_left_gripper = ("lego_square", "ned_left/left_finger") in all_contact_pairs
+        touch_right_gripper = ("lego_square", "ned_right/right_finger") in all_contact_pairs
         touch_table = ("lego_square", "table") in all_contact_pairs
 
         reward = 0

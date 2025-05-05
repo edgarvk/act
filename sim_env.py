@@ -156,8 +156,8 @@ class TransferLegoTask(BimanualNiryoNedTask):
             contact_pair = (name_geom_1, name_geom_2)
             all_contact_pairs.append(contact_pair)
 
-        touch_left_gripper = ("lego_square", "ned_left/9_left_finger") in all_contact_pairs
-        touch_right_gripper = ("lego_square", "ned_right/10_right_finger") in all_contact_pairs
+        touch_left_gripper = ("lego_square", "ned_left/left_finger") in all_contact_pairs
+        touch_right_gripper = ("lego_square", "ned_right/right_finger") in all_contact_pairs
         touch_table = ("lego_square", "table") in all_contact_pairs
 
         reward = 0

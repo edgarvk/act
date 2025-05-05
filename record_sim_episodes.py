@@ -108,11 +108,17 @@ def main(args):
                 plt_img.set_data(ts.observation['images'][render_cam_name])
                 plt.pause(0.02)
 
-        episode_return = np.sum([r for r in (ts.reward for ts in episode_replay[1:]) if r is not None])
-        episode_max_reward = np.max([ts.reward if ts.reward is not None else 0 for ts in episode_replay[1:]])
+        # Compute and print rewards
+        all_rewards = [ts.reward if ts.reward is not None else 0 for ts in episode_replay[1:]]
+        episode_return = np.sum(all_rewards)
+        episode_max_reward = np.max(all_rewards)
+
+        print(f"{episode_idx=} Reward sequence: {all_rewards}")
+        print(f"{episode_idx=} Return: {episode_return}, Max reward: {episode_max_reward}")
+
         if episode_max_reward == env.task.max_reward:
             success.append(1)
-            print(f"{episode_idx=} Successful, {episode_return=}")
+            print(f"{episode_idx=} Successful")
         else:
             success.append(0)
             print(f"{episode_idx=} Failed")
@@ -186,4 +192,3 @@ if __name__ == '__main__':
     parser.add_argument('--onscreen_render', action='store_true')
     
     main(vars(parser.parse_args()))
-
